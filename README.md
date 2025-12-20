@@ -1,4 +1,4 @@
-# 🐾 Pet Expense Tracker
+# 🐾 Personal Expense Tracking App (PET)
 
 A modern, lightweight, and premium Personal Expense Tracking application built with Flutter. Take control of your finances with a sleek dark theme, local-first privacy, and smart AI-driven insights.
 
