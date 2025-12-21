@@ -15,10 +15,10 @@ class TransactionCubit extends Cubit<TransactionState> {
       final allTransactions = _repository.getAllTransactions();
 
       var filtered = allTransactions;
-      if (category != null && category != 'All') {
+      if (category != null && category.toLowerCase() != 'all') {
         filtered = filtered.where((t) => t.category == category).toList();
       }
-      if (type != null && type != 'All') {
+      if (type != null && type.toLowerCase() != 'all') {
         filtered = filtered.where((t) => t.type == type.toLowerCase()).toList();
       }
 

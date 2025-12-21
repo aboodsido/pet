@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pet/core/theme/app_theme.dart';
@@ -10,7 +11,7 @@ class AiAdvisorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Financial Advisor')),
+      appBar: AppBar(title: Text('ai_advisor'.tr())),
       body: BlocBuilder<AiAdvisorCubit, AiAdvisorState>(
         builder: (context, state) {
           if (state is AiAdvisorInitial) {
@@ -32,12 +33,12 @@ class AiAdvisorView extends StatelessWidget {
                   _buildSafetyCard(state.safetyScore),
                   const SizedBox(height: 24),
                   Text(
-                    'Personalized Insights',
+                    'personalized_insights'.tr(),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
                   ...state.insights.map(
-                    (insight) => _buildInsightCard(insight),
+                    (insight) => _buildInsightCard(context, insight),
                   ),
                 ],
               ),
@@ -45,7 +46,7 @@ class AiAdvisorView extends StatelessWidget {
           }
 
           if (state is AiAdvisorError) {
-            return Center(child: Text('Error: ${state.message}'));
+            return Center(child: Text('error'.tr(args: [state.message])));
           }
 
           return const SizedBox();
@@ -63,17 +64,17 @@ class AiAdvisorView extends StatelessWidget {
       case 'Critical':
         color = AppTheme.errorColor;
         icon = Icons.warning_amber_rounded;
-        text = 'Financial Health: Critical';
+        text = 'health_critical'.tr();
         break;
       case 'Warning':
         color = Colors.orange;
         icon = Icons.info_outline;
-        text = 'Financial Health: Warning';
+        text = 'health_warning'.tr();
         break;
       default:
         color = AppTheme.accentColor;
         icon = Icons.check_circle_outline;
-        text = 'Financial Health: Stable';
+        text = 'health_stable'.tr();
     }
 
     return Container(
@@ -102,14 +103,15 @@ class AiAdvisorView extends StatelessWidget {
     );
   }
 
-  Widget _buildInsightCard(String text) {
+  Widget _buildInsightCard(BuildContext context, String text) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

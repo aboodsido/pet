@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:pet/core/theme/app_theme.dart';
 import 'package:pet/features/transactions/data/models/transaction_model.dart';
 import 'package:pet/features/transactions/logic/transaction_cubit.dart';
@@ -12,7 +12,7 @@ class TransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
+      appBar: AppBar(title: Text('transactions'.tr())),
       body: Column(
         children: [
           _buildFilterBar(context),
@@ -25,7 +25,7 @@ class TransactionsView extends StatelessWidget {
 
                 if (state is TransactionLoaded) {
                   if (state.filteredTransactions.isEmpty) {
-                    return const Center(child: Text('No transactions found.'));
+                    return Center(child: Text('no_transactions'.tr()));
                   }
 
                   return ListView.builder(
@@ -38,7 +38,7 @@ class TransactionsView extends StatelessWidget {
                   );
                 }
 
-                return const Center(child: Text('Something went wrong'));
+                return Center(child: Text('something_went_wrong'.tr()));
               },
             ),
           ),
@@ -64,9 +64,9 @@ class TransactionsView extends StatelessWidget {
             children: [
               _buildFilterChip(
                 context,
-                'Type',
-                state.filterType ?? 'All',
-                ['All', 'Expense', 'Income'],
+                'type'.tr(),
+                state.filterType != null ? state.filterType!.tr() : 'all'.tr(),
+                ['all', 'expense', 'income'],
                 (val) {
                   context.read<TransactionCubit>().setFilter(type: val);
                 },
@@ -74,8 +74,8 @@ class TransactionsView extends StatelessWidget {
               const SizedBox(width: 8),
               _buildFilterChip(
                 context,
-                'Category',
-                state.filterCategory ?? 'All',
+                'category'.tr(),
+                state.filterCategory ?? 'all'.tr(),
                 ['All', ...state.transactions.map((t) => t.category).toSet()],
                 (val) {
                   context.read<TransactionCubit>().setFilter(category: val);
@@ -95,17 +95,20 @@ class TransactionsView extends StatelessWidget {
     Iterable<String> options,
     Function(String) onSelected,
   ) {
+    final theme = Theme.of(context);
     return PopupMenuButton<String>(
       onSelected: onSelected,
       itemBuilder:
           (context) =>
               options
-                  .map((opt) => PopupMenuItem(value: opt, child: Text(opt)))
+                  .map(
+                    (opt) => PopupMenuItem(value: opt, child: Text(opt.tr())),
+                  )
                   .toList(),
       child: Chip(
-        label: Text('$label: $selected'),
-        backgroundColor: AppTheme.cardColor,
-        side: BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+        label: Text('$label: ${selected.tr()}'),
+        backgroundColor: theme.cardColor,
+        side: BorderSide(color: theme.primaryColor.withValues(alpha: 0.3)),
       ),
     );
   }
@@ -113,6 +116,7 @@ class TransactionsView extends StatelessWidget {
   Widget _buildTransactionItem(BuildContext context, TransactionModel t) {
     final curFormat = NumberFormat.currency(symbol: '\$');
     final isExpense = t.type == 'expense';
+    final theme = Theme.of(context);
 
     return Dismissible(
       key: Key(t.id),
@@ -127,7 +131,7 @@ class TransactionsView extends StatelessWidget {
         context.read<TransactionCubit>().deleteTransaction(t.id);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Transaction deleted')));
+        ).showSnackBar(SnackBar(content: Text('deleted_msg'.tr())));
       },
       child: InkWell(
         onTap: () => _showAddEditDialog(context, transaction: t),
@@ -135,9 +139,11 @@ class TransactionsView extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppTheme.cardColor,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            border: Border.all(
+              color: theme.dividerColor.withValues(alpha: 0.1),
+            ),
           ),
           child: Row(
             children: [
@@ -168,8 +174,8 @@ class TransactionsView extends StatelessWidget {
                     if (t.note != null && t.note!.isNotEmpty)
                       Text(
                         t.note!,
-                        style: const TextStyle(
-                          color: AppTheme.secondaryTextColor,
+                        style: TextStyle(
+                          color: theme.textTheme.bodyMedium?.color,
                           fontSize: 13,
                         ),
                         maxLines: 1,
@@ -177,8 +183,8 @@ class TransactionsView extends StatelessWidget {
                       ),
                     Text(
                       DateFormat('MMM dd, yyyy').format(t.date),
-                      style: const TextStyle(
-                        color: AppTheme.secondaryTextColor,
+                      style: TextStyle(
+                        color: theme.textTheme.bodyMedium?.color,
                         fontSize: 11,
                       ),
                     ),
@@ -253,10 +259,11 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
   Widget build(BuildContext context) {
     final isEdit = widget.transaction != null;
 
+    final theme = Theme.of(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.only(
         top: 24,
@@ -272,7 +279,7 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                isEdit ? 'Edit Transaction' : 'Add Transaction',
+                isEdit ? 'edit_transaction'.tr() : 'add_transaction'.tr(),
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -287,9 +294,9 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
           const SizedBox(height: 24),
           Row(
             children: [
-              _buildTypeButton('expense', 'Expense', AppTheme.errorColor),
+              _buildTypeButton('expense', 'expense'.tr(), AppTheme.errorColor),
               const SizedBox(width: 12),
-              _buildTypeButton('income', 'Income', AppTheme.accentColor),
+              _buildTypeButton('income', 'income'.tr(), AppTheme.accentColor),
             ],
           ),
           const SizedBox(height: 24),
@@ -297,22 +304,25 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            decoration: InputDecoration(labelText: 'Amount', prefixText: '\$ '),
+            decoration: InputDecoration(
+              labelText: 'amount'.tr(),
+              prefixText: '\$ ',
+            ),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: _categoryController,
             decoration: InputDecoration(
-              labelText: 'Category',
-              hintText: 'e.g. Food, Salary, Rent',
+              labelText: 'category'.tr(),
+              hintText: 'category_hint'.tr(),
             ),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: _noteController,
             decoration: InputDecoration(
-              labelText: 'Description (Optional)',
-              hintText: 'What exactly was this?',
+              labelText: 'note'.tr(),
+              hintText: 'note_hint'.tr(),
             ),
             maxLines: 2,
           ),
@@ -330,15 +340,15 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
               decoration: BoxDecoration(
-                color: AppTheme.cardColor,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.calendar_today,
                     size: 20,
-                    color: AppTheme.secondaryTextColor,
+                    color: theme.textTheme.bodyMedium?.color,
                   ),
                   const SizedBox(width: 12),
                   Text(DateFormat('MMM dd, yyyy').format(_selectedDate)),
@@ -385,7 +395,7 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
                 ),
               ),
               child: Text(
-                isEdit ? 'Update Transaction' : 'Save Transaction',
+                isEdit ? 'update'.tr() : 'save'.tr(),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

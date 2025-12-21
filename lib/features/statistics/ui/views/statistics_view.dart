@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,16 +21,16 @@ class _StatisticsViewState extends State<StatisticsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Statistics'),
+        title: Text('stats'.tr()),
         actions: [
           PopupMenuButton<int>(
             initialValue: _rangeDays,
             onSelected: (val) => setState(() => _rangeDays = val),
             itemBuilder:
                 (context) => [
-                  const PopupMenuItem(value: 7, child: Text('Last 7 Days')),
-                  const PopupMenuItem(value: 30, child: Text('Last 30 Days')),
-                  const PopupMenuItem(value: 90, child: Text('Last 90 Days')),
+                  PopupMenuItem(value: 7, child: Text('last_7_days'.tr())),
+                  PopupMenuItem(value: 30, child: Text('last_30_days'.tr())),
+                  PopupMenuItem(value: 90, child: Text('last_90_days'.tr())),
                 ],
             icon: const Icon(Icons.calendar_today_outlined),
           ),
@@ -48,7 +49,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             );
 
             if (filteredTransactions.isEmpty) {
-              return const Center(child: Text('No data for this period'));
+              return Center(child: Text('no_data'.tr()));
             }
 
             final expenseMap = _groupExpensesByCategory(filteredTransactions);
@@ -62,14 +63,14 @@ class _StatisticsViewState extends State<StatisticsView> {
                 _buildPeriodComparison(incomeVsExpense),
                 const SizedBox(height: 32),
                 Text(
-                  'Income vs Expense History',
+                  'income_vs_expense'.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
                 _buildLineChart(filteredTransactions),
                 const SizedBox(height: 32),
                 Text(
-                  'Expense Breakdown',
+                  'expense_breakdown'.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 24),
@@ -85,7 +86,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  'Top Categories',
+                  'top_categories'.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
@@ -101,7 +102,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             );
           }
 
-          return const Center(child: Text('Something went wrong'));
+          return Center(child: Text('something_went_wrong'.tr()));
         },
       ),
     );
@@ -132,28 +133,29 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   Widget _buildPeriodComparison(Map<String, double> stats) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildComparisonItem(
-            'Income',
+            'income'.tr(),
             stats['income'] ?? 0,
             AppTheme.accentColor,
           ),
           _buildComparisonItem(
-            'Expense',
+            'expenses'.tr(),
             stats['expense'] ?? 0,
             AppTheme.errorColor,
           ),
           _buildComparisonItem(
-            'Net',
+            'savings'.tr(),
             (stats['income'] ?? 0) - (stats['expense'] ?? 0),
             AppTheme.primaryColor,
           ),
@@ -163,6 +165,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   Widget _buildComparisonItem(String label, double val, Color color) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Text(
@@ -175,8 +178,8 @@ class _StatisticsViewState extends State<StatisticsView> {
         ),
         Text(
           label,
-          style: const TextStyle(
-            color: AppTheme.secondaryTextColor,
+          style: TextStyle(
+            color: theme.textTheme.bodyMedium?.color,
             fontSize: 12,
           ),
         ),
@@ -295,6 +298,8 @@ class _StatisticsViewState extends State<StatisticsView> {
   ) {
     if (total == 0) total = 1;
     final percentage = (amount / total) * 100;
+    final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -314,7 +319,7 @@ class _StatisticsViewState extends State<StatisticsView> {
           const SizedBox(height: 8),
           LinearProgressIndicator(
             value: amount / total,
-            backgroundColor: AppTheme.cardColor,
+            backgroundColor: theme.cardColor,
             color: AppTheme.primaryColor,
             minHeight: 6,
             borderRadius: BorderRadius.circular(4),

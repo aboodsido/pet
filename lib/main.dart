@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,6 +9,7 @@ import 'core/theme/app_theme.dart';
 import 'features/ai_advisor/logic/ai_advisor_cubit.dart';
 import 'features/ai_advisor/ui/views/ai_advisor_view.dart';
 import 'features/dashboard/ui/views/dashboard_view.dart';
+import 'features/settings/logic/theme_cubit.dart';
 import 'features/settings/ui/views/settings_view.dart';
 import 'features/statistics/ui/views/statistics_view.dart';
 import 'features/transactions/data/models/transaction_model.dart';
@@ -21,11 +23,22 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TransactionModelAdapter());
   await Hive.openBox<TransactionModel>(AppConstants.transactionBox);
+  await Hive.openBox(AppConstants.settingsBox);
 
   // Initialize Service Locator
   await di.init();
 
-  runApp(const PetExpenseApp());
+  // Initialize EasyLocalization
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: const PetExpenseApp(),
+    ),
+  );
 }
 
 class PetExpenseApp extends StatelessWidget {
@@ -39,12 +52,22 @@ class PetExpenseApp extends StatelessWidget {
           create: (context) => di.sl<TransactionCubit>()..loadTransactions(),
         ),
         BlocProvider(create: (context) => di.sl<AiAdvisorCubit>()),
+        BlocProvider(create: (context) => di.sl<ThemeCubit>()),
       ],
-      child: MaterialApp(
-        title: AppConstants.appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
-        home: const MainNavigationScreen(),
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp(
+            title: 'app_name'.tr(),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeMode,
+            home: const MainNavigationScreen(),
+          );
+        },
       ),
     );
   }
@@ -75,26 +98,32 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
+        type: BottomNavigationBarType.fixed,
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
+            icon: const Icon(Icons.dashboard_outlined),
+            activeIcon: const Icon(Icons.dashboard),
+            label: 'dashboard'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
-            label: 'Transactions',
+            icon: const Icon(Icons.receipt_long_outlined),
+            activeIcon: const Icon(Icons.receipt_long),
+            label: 'transactions'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart_outline),
-            label: 'Stats',
+            icon: const Icon(Icons.bar_chart_outlined),
+            activeIcon: const Icon(Icons.bar_chart),
+            label: 'stats'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.psychology_outlined),
-            label: 'AI Advisor',
+            icon: const Icon(Icons.auto_awesome_outlined),
+            activeIcon: const Icon(Icons.auto_awesome),
+            label: 'ai_advisor'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            activeIcon: const Icon(Icons.settings),
+            label: 'settings'.tr(),
           ),
         ],
       ),

@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:pet/core/theme/app_theme.dart';
+import 'package:pet/features/transactions/data/models/transaction_model.dart';
 import 'package:pet/features/transactions/logic/transaction_cubit.dart';
 import 'package:pet/features/transactions/logic/transaction_state.dart';
 
@@ -11,8 +12,9 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Pet Expense Dashboard')),
+      appBar: AppBar(title: Text('app_name'.tr())),
       body: BlocBuilder<TransactionCubit, TransactionState>(
         builder: (context, state) {
           if (state is TransactionLoading) {
@@ -22,6 +24,7 @@ class DashboardView extends StatelessWidget {
           if (state is TransactionLoaded) {
             final currencyFormat = NumberFormat.currency(symbol: '\$');
             final monthlyStats = _calculateMonthlyStats(state.transactions);
+            final recentTransactions = state.transactions.take(5).toList();
 
             return RefreshIndicator(
               onRefresh:
@@ -31,7 +34,8 @@ class DashboardView extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 children: [
                   _buildSummaryCard(
-                    title: 'Total Balance',
+                    context,
+                    title: 'total_balance'.tr(),
                     amount: currencyFormat.format(state.totalBalance),
                     color: AppTheme.primaryColor,
                     isMain: true,
@@ -41,7 +45,8 @@ class DashboardView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildSummaryCard(
-                          title: 'Total Income',
+                          context,
+                          title: 'total_income'.tr(),
                           amount: currencyFormat.format(state.totalIncome),
                           color: AppTheme.accentColor,
                         ),
@@ -49,7 +54,8 @@ class DashboardView extends StatelessWidget {
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildSummaryCard(
-                          title: 'Total Expenses',
+                          context,
+                          title: 'total_expenses'.tr(),
                           amount: currencyFormat.format(state.totalExpenses),
                           color: AppTheme.errorColor,
                         ),
@@ -65,33 +71,38 @@ class DashboardView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Recent Transactions',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        'recent_transactions'.tr(),
+                        style: theme.textTheme.titleLarge,
                       ),
                       TextButton(
-                        onPressed: () {},
-                        child: const Text('See All'),
+                        onPressed: () {
+                          // Navigate to transactions tab - this is handled by MainNavigationScreen usually
+                        },
+                        child: Text('see_all'.tr()),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  if (state.transactions.isEmpty)
-                    const Center(
+                  const SizedBox(height: 16),
+                  if (recentTransactions.isEmpty)
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Text('No transactions yet'),
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Text(
+                          'no_transactions'.tr(),
+                          style: TextStyle(color: theme.hintColor),
+                        ),
                       ),
                     )
                   else
-                    ...state.transactions
-                        .take(5)
-                        .map((t) => _buildTransactionItem(context, t)),
+                    ...recentTransactions.map(
+                      (t) => _buildTransactionItem(context, t),
+                    ),
                 ],
               ),
             );
           }
 
-          return const Center(child: Text('Add your first transaction!'));
+          return Center(child: Text('add_first_transaction'.tr()));
         },
       ),
     );
@@ -99,36 +110,43 @@ class DashboardView extends StatelessWidget {
 
   Widget _buildMonthlySummary(BuildContext context, Map<String, double> stats) {
     final curFormat = NumberFormat.currency(symbol: '\$');
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'This Month',
-            style: TextStyle(color: AppTheme.secondaryTextColor, fontSize: 14),
+          Text(
+            'this_month'.tr(),
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildStat(
-                'Income',
+                context,
+                'income'.tr(),
                 curFormat.format(stats['income'] ?? 0),
                 AppTheme.accentColor,
               ),
               _buildStat(
-                'Expenses',
+                context,
+                'expenses'.tr(),
                 curFormat.format(stats['expense'] ?? 0),
                 AppTheme.errorColor,
               ),
               _buildStat(
-                'Savings',
+                context,
+                'savings'.tr(),
                 curFormat.format(
                   (stats['income'] ?? 0) - (stats['expense'] ?? 0),
                 ),
@@ -141,7 +159,13 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildStat(String label, String value, Color color) {
+  Widget _buildStat(
+    BuildContext context,
+    String label,
+    String value,
+    Color color,
+  ) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,10 +177,11 @@ class DashboardView extends StatelessWidget {
             fontSize: 16,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: AppTheme.secondaryTextColor,
+          style: TextStyle(
+            color: theme.textTheme.bodyMedium?.color,
             fontSize: 12,
           ),
         ),
@@ -164,21 +189,28 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniChart(BuildContext context, dynamic transactions) {
+  Widget _buildMiniChart(
+    BuildContext context,
+    List<TransactionModel> transactions,
+  ) {
+    final theme = Theme.of(context);
     return Container(
       height: 150,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Quick Overview',
-            style: TextStyle(color: AppTheme.secondaryTextColor, fontSize: 14),
+          Text(
+            'quick_overview'.tr(),
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -209,9 +241,10 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  List<FlSpot> _getSpots(dynamic transactions) {
+  List<FlSpot> _getSpots(List<TransactionModel> transactions) {
     if (transactions.isEmpty) return [const FlSpot(0, 0)];
-    final sorted = [...transactions]..sort((a, b) => a.date.compareTo(b.date));
+    final sorted = List<TransactionModel>.from(transactions)
+      ..sort((a, b) => a.date.compareTo(b.date));
     final List<FlSpot> spots = [];
     double balance = 0;
     for (int i = 0; i < sorted.length; i++) {
@@ -222,7 +255,9 @@ class DashboardView extends StatelessWidget {
     return spots;
   }
 
-  Map<String, double> _calculateMonthlyStats(dynamic transactions) {
+  Map<String, double> _calculateMonthlyStats(
+    List<TransactionModel> transactions,
+  ) {
     final now = DateTime.now();
     double income = 0;
     double expense = 0;
@@ -238,16 +273,18 @@ class DashboardView extends StatelessWidget {
     return {'income': income, 'expense': expense};
   }
 
-  Widget _buildSummaryCard({
+  Widget _buildSummaryCard(
+    BuildContext context, {
     required String title,
     required String amount,
     required Color color,
     bool isMain = false,
   }) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.all(isMain ? 24 : 16),
       decoration: BoxDecoration(
-        color: isMain ? color : AppTheme.cardColor,
+        color: isMain ? color : theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -259,7 +296,7 @@ class DashboardView extends StatelessWidget {
         border:
             isMain
                 ? null
-                : Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                : Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,7 +307,7 @@ class DashboardView extends StatelessWidget {
               color:
                   isMain
                       ? Colors.white.withValues(alpha: 0.8)
-                      : AppTheme.secondaryTextColor,
+                      : theme.textTheme.bodyMedium?.color,
               fontSize: isMain ? 16 : 14,
               fontWeight: FontWeight.w500,
             ),
@@ -279,7 +316,7 @@ class DashboardView extends StatelessWidget {
           Text(
             amount,
             style: TextStyle(
-              color: isMain ? Colors.white : AppTheme.textColor,
+              color: isMain ? Colors.white : theme.textTheme.bodyLarge?.color,
               fontSize: isMain ? 32 : 20,
               fontWeight: FontWeight.bold,
             ),
@@ -289,17 +326,18 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionItem(BuildContext context, dynamic t) {
+  Widget _buildTransactionItem(BuildContext context, TransactionModel t) {
     final currencyFormat = NumberFormat.currency(symbol: '\$');
     final isExpense = t.type == 'expense';
 
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppTheme.cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -328,8 +366,8 @@ class DashboardView extends StatelessWidget {
                 if (t.note != null && t.note!.isNotEmpty)
                   Text(
                     t.note!,
-                    style: const TextStyle(
-                      color: AppTheme.secondaryTextColor,
+                    style: TextStyle(
+                      color: theme.textTheme.bodyMedium?.color,
                       fontSize: 13,
                     ),
                     maxLines: 1,
@@ -337,8 +375,8 @@ class DashboardView extends StatelessWidget {
                   ),
                 Text(
                   DateFormat('MMM dd, yyyy').format(t.date),
-                  style: const TextStyle(
-                    color: AppTheme.secondaryTextColor,
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color,
                     fontSize: 11,
                   ),
                 ),
