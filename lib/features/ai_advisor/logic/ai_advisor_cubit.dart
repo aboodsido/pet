@@ -15,9 +15,7 @@ class AiAdvisorCubit extends Cubit<AiAdvisorState> {
       if (transactions.isEmpty) {
         emit(
           const AiAdvisorLoaded(
-            insights: [
-              'Add some transactions to get AI-powered financial advice!',
-            ],
+            insights: ['add_transactions_insight'],
             safetyScore: 'Neutral',
           ),
         );
@@ -32,17 +30,11 @@ class AiAdvisorCubit extends Cubit<AiAdvisorState> {
       if (totalIncome > 0) {
         final expenseRatio = totalExpenses / totalIncome;
         if (expenseRatio > 0.8) {
-          insights.add(
-            '⚠️ You have spent over 80% of your income this month. Consider cutting down on non-essential items.',
-          );
+          insights.add('spent_over_80_insight');
         } else if (expenseRatio < 0.5) {
-          insights.add(
-            '✅ Great job! You are saving more than 50% of your income.',
-          );
+          insights.add('saving_over_50_insight');
         } else {
-          insights.add(
-            'ℹ️ Your spending is within a healthy range of your income.',
-          );
+          insights.add('spending_healthy_insight');
         }
       }
 
@@ -63,27 +55,21 @@ class AiAdvisorCubit extends Cubit<AiAdvisorState> {
         final topPercent = (topCategory.value / totalExpenses) * 100;
 
         insights.add(
-          'Your highest spending category is **${topCategory.key}**, making up ${topPercent.toStringAsFixed(1)}% of your total expenses.',
+          'highest_category_insight|${topCategory.key}|${topPercent.toStringAsFixed(1)}',
         );
 
         if (topCategory.key.toLowerCase().contains('food') && topPercent > 30) {
-          insights.add(
-            '🍔 Dining and groceries are your biggest costs. Maybe try meal prepping to save more?',
-          );
+          insights.add('food_spending_tip');
         }
       }
 
       // Savings tip
-      insights.add(
-        '💡 Tip: Try the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings.',
-      );
+      insights.add('rule_50_30_20_tip');
 
       String safetyScore = 'Good';
       if (totalIncome > 0 && totalExpenses > totalIncome) {
         safetyScore = 'Critical';
-        insights.add(
-          '🚨 Danger: Your expenses exceed your income. You are currently losing money!',
-        );
+        insights.add('danger_expenses_exceed');
       } else if (totalIncome > 0 && (totalExpenses / totalIncome) > 0.7) {
         safetyScore = 'Warning';
       }

@@ -89,13 +89,25 @@ class AiAdvisorView extends StatelessWidget {
           Icon(icon, color: color, size: 40),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: color,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'financial_health'.tr(),
+                  style: TextStyle(
+                    color: color.withValues(alpha: 0.7),
+                    fontSize: 12,
+                  ),
+                ),
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -103,8 +115,17 @@ class AiAdvisorView extends StatelessWidget {
     );
   }
 
-  Widget _buildInsightCard(BuildContext context, String text) {
+  Widget _buildInsightCard(BuildContext context, String rawText) {
     final theme = Theme.of(context);
+
+    // Parse rawText for potential localized keys and arguments
+    // Format: key|arg1|arg2...
+    final parts = rawText.split('|');
+    final key = parts[0];
+    final args = parts.skip(1).toList();
+
+    final translatedText = key.tr(args: args);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -124,7 +145,7 @@ class AiAdvisorView extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              text.replaceAll('**', ''), // Simple markdown clean for simplicity
+              translatedText.replaceAll('**', ''), // Simple markdown clean
               style: const TextStyle(fontSize: 15, height: 1.4),
             ),
           ),

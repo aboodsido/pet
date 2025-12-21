@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static const Color primaryColor = Color(0xFF6366F1); // Indigo
@@ -33,26 +34,28 @@ class AppTheme {
         onSurface: lightTextColor,
         onError: Colors.white,
       ),
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(
-          color: lightTextColor,
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
+      textTheme: GoogleFonts.cairoTextTheme(
+        const TextTheme(
+          headlineLarge: TextStyle(
+            color: lightTextColor,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+          headlineMedium: TextStyle(
+            color: lightTextColor,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+          titleLarge: TextStyle(
+            color: lightTextColor,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+          bodyLarge: TextStyle(color: lightTextColor, fontSize: 16),
+          bodyMedium: TextStyle(color: lightSecondaryTextColor, fontSize: 14),
         ),
-        headlineMedium: TextStyle(
-          color: lightTextColor,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: TextStyle(
-          color: lightTextColor,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        bodyLarge: TextStyle(color: lightTextColor, fontSize: 16),
-        bodyMedium: TextStyle(color: lightSecondaryTextColor, fontSize: 14),
       ),
       cardTheme: CardTheme(
         color: lightCardColor,
@@ -62,12 +65,12 @@ class AppTheme {
           side: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme:  AppBarTheme(
         backgroundColor: lightScaffoldBackgroundColor,
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: lightTextColor),
-        titleTextStyle: TextStyle(
+        titleTextStyle: GoogleFonts.cairo(
           color: lightTextColor,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -123,26 +126,28 @@ class AppTheme {
         onSurface: textColor,
         onError: Colors.white,
       ),
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(
-          color: textColor,
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
+      textTheme: GoogleFonts.cairoTextTheme(
+        const TextTheme(
+          headlineLarge: TextStyle(
+            color: textColor,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+          headlineMedium: TextStyle(
+            color: textColor,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+          titleLarge: TextStyle(
+            color: textColor,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+          bodyLarge: TextStyle(color: textColor, fontSize: 16),
+          bodyMedium: TextStyle(color: secondaryTextColor, fontSize: 14),
         ),
-        headlineMedium: TextStyle(
-          color: textColor,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: TextStyle(
-          color: textColor,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        bodyLarge: TextStyle(color: textColor, fontSize: 16),
-        bodyMedium: TextStyle(color: secondaryTextColor, fontSize: 14),
       ),
       cardTheme: CardTheme(
         color: cardColor,
@@ -152,12 +157,12 @@ class AppTheme {
           side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme:  AppBarTheme(
         backgroundColor: scaffoldBackgroundColor,
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: textColor),
-        titleTextStyle: TextStyle(
+        titleTextStyle: GoogleFonts.cairo(
           color: textColor,
           fontSize: 20,
           fontWeight: FontWeight.bold,
