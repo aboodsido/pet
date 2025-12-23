@@ -30,6 +30,7 @@ void main() async {
   // Initialize Service Locator
   await di.init();
 
+  // Load .env file from root
   await dotenv.load(fileName: ".env");
 
   // Initialize EasyLocalization
