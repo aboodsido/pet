@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/logic/navigation_cubit.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../transactions/data/models/transaction_model.dart';
 import '../../../transactions/logic/transaction_state.dart';
@@ -38,7 +40,9 @@ class DashboardBody extends StatelessWidget {
         const SizedBox(height: 24),
         MiniChart(transactions: state.transactions),
         const SizedBox(height: 32),
-        DashboardRecentHeader(onSeeAll: () {}),
+        DashboardRecentHeader(
+          onSeeAll: () => context.read<NavigationCubit>().setIndex(1),
+        ),
         const SizedBox(height: 16),
         if (recent.isEmpty)
           const DashboardEmptyState()

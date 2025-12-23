@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/logic/navigation_cubit.dart';
 import 'core/services/service_locator.dart' as di;
 import 'core/theme/app_theme.dart';
 import 'features/ai_advisor/logic/ai_advisor_cubit.dart';
@@ -55,6 +56,7 @@ class PetExpenseApp extends StatelessWidget {
           create: (context) => di.sl<AiAdvisorCubit>()..analyzeSpending(),
         ),
         BlocProvider(create: (context) => di.sl<ThemeCubit>()),
+        BlocProvider(create: (context) => di.sl<NavigationCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
@@ -83,8 +85,6 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 0;
-
   final List<Widget> _screens = [
     const DashboardView(),
     const TransactionsView(),
@@ -95,40 +95,44 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.dashboard_outlined),
-            activeIcon: const Icon(Icons.dashboard),
-            label: 'dashboard'.tr(),
+    return BlocBuilder<NavigationCubit, int>(
+      builder: (context, selectedIndex) {
+        return Scaffold(
+          body: _screens[selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: selectedIndex,
+            onTap: (index) => context.read<NavigationCubit>().setIndex(index),
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.dashboard_outlined),
+                activeIcon: const Icon(Icons.dashboard),
+                label: 'dashboard'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.receipt_long_outlined),
+                activeIcon: const Icon(Icons.receipt_long),
+                label: 'transactions'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.bar_chart_outlined),
+                activeIcon: const Icon(Icons.bar_chart),
+                label: 'stats'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.auto_awesome_outlined),
+                activeIcon: const Icon(Icons.auto_awesome),
+                label: 'ai_advisor'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.settings_outlined),
+                activeIcon: const Icon(Icons.settings),
+                label: 'settings'.tr(),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.receipt_long_outlined),
-            activeIcon: const Icon(Icons.receipt_long),
-            label: 'transactions'.tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.bar_chart_outlined),
-            activeIcon: const Icon(Icons.bar_chart),
-            label: 'stats'.tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.auto_awesome_outlined),
-            activeIcon: const Icon(Icons.auto_awesome),
-            label: 'ai_advisor'.tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.settings_outlined),
-            activeIcon: const Icon(Icons.settings),
-            label: 'settings'.tr(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
