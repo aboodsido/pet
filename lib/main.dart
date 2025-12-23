@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/constants/app_constants.dart';
@@ -28,6 +29,8 @@ void main() async {
 
   // Initialize Service Locator
   await di.init();
+
+  await dotenv.load(fileName: ".env");
 
   // Initialize EasyLocalization
   await EasyLocalization.ensureInitialized();

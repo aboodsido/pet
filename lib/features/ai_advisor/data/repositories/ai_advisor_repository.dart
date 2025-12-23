@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../../../../core/constants/app_constants.dart';
@@ -5,19 +6,13 @@ import '../../../../core/constants/app_constants.dart';
 class AiAdvisorRepository {
   late final GenerativeModel _model;
 
+  String apiKey = dotenv.env['API_KEY'] ?? '';
   AiAdvisorRepository() {
-    _model = GenerativeModel(
-      model: AppConstants.geminiModel,
-      apiKey: AppConstants.geminiApiKey,
-    );
+    _model = GenerativeModel(model: AppConstants.geminiModel, apiKey: apiKey);
   }
 
   Future<String> getAiAdvice(String prompt) async {
     try {
-      if (AppConstants.geminiApiKey == 'YOUR_GEMINI_API_KEY') {
-        return 'Please set your Gemini API Key in AppConstants to use the AI Advisor.';
-      }
-
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
 
