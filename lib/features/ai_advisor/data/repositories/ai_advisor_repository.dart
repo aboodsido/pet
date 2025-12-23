@@ -6,7 +6,7 @@ import '../../../../core/constants/app_constants.dart';
 class AiAdvisorRepository {
   late final GenerativeModel _model;
 
-  String apiKey = dotenv.env['API_KEY'] ?? '';
+  String apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
   AiAdvisorRepository() {
     _model = GenerativeModel(model: AppConstants.geminiModel, apiKey: apiKey);
   }
