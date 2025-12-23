@@ -51,7 +51,9 @@ class PetExpenseApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<TransactionCubit>()..loadTransactions(),
         ),
-        BlocProvider(create: (context) => di.sl<AiAdvisorCubit>()),
+        BlocProvider(
+          create: (context) => di.sl<AiAdvisorCubit>()..analyzeSpending(),
+        ),
         BlocProvider(create: (context) => di.sl<ThemeCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

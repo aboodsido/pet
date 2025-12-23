@@ -7,8 +7,19 @@ import 'package:pet/features/ai_advisor/logic/ai_advisor_state.dart';
 import '../widgets/insight_card.dart';
 import '../widgets/safety_card.dart';
 
-class AiAdvisorView extends StatelessWidget {
+class AiAdvisorView extends StatefulWidget {
   const AiAdvisorView({super.key});
+
+  @override
+  State<AiAdvisorView> createState() => _AiAdvisorViewState();
+}
+
+class _AiAdvisorViewState extends State<AiAdvisorView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AiAdvisorCubit>().analyzeSpending();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +27,7 @@ class AiAdvisorView extends StatelessWidget {
       appBar: AppBar(title: Text('ai_advisor'.tr())),
       body: BlocBuilder<AiAdvisorCubit, AiAdvisorState>(
         builder: (context, state) {
-          if (state is AiAdvisorInitial) {
-            context.read<AiAdvisorCubit>().analyzeSpending();
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is AiAdvisorLoading) {
+          if (state is AiAdvisorInitial || state is AiAdvisorLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 

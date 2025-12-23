@@ -8,9 +8,12 @@ class AiAdvisorCubit extends Cubit<AiAdvisorState> {
 
   AiAdvisorCubit(this._repository) : super(AiAdvisorInitial());
 
-  void analyzeSpending() {
+  Future<void> analyzeSpending() async {
     emit(AiAdvisorLoading());
     try {
+      // Small delay to ensure UI shows loading state and isn't blocked immediately
+      await Future.delayed(const Duration(milliseconds: 300));
+
       final transactions = _repository.getAllTransactions();
       if (transactions.isEmpty) {
         emit(
