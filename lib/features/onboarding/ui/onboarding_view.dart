@@ -106,7 +106,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       child: Text(
                         'skip'.tr(),
                         style: textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
