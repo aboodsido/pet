@@ -71,5 +71,21 @@
   "app_language": "لغة التطبيق",
   "export_share": "تصدير ومشاركة CSV",
   "dark_theme_enabled": "الوضع الليلي مفعل",
-  "light_theme_enabled": "الوضع الفاتح مفعل"
+  "light_theme_enabled": "الوضع الفاتح مفعل",
+  "skip": "تخطي",
+  "next": "التالي",
+  "get_started": "ابدأ الآن",
+  "onboarding_title_1": "تحكم في أموالك بنظرة واحدة",
+  "onboarding_description_1": "شاهد المصروفات والدخل في عرض هادئ منظم حسب الفئات التي تناسب نمط حياتك.",
+  "onboarding_title_2": "الذكاء الاصطناعي يراقب عاداتك",
+  "onboarding_description_2": "احصل على تنبيهات مبكرة واتجاهات شهرية ونصائح مختصرة بناءً على إنفاقك الفعلي.",
+  "onboarding_title_3": "ابقَ مسيطرًا وعلى المسار الصحيح",
+  "onboarding_description_3": "حدد أهدافك، قارن الأشهر، وابنِ زخمًا لمدخراتك بدون تخمين.",
+  "onboarding_badge_finances": "نظرة على المال",
+  "onboarding_badge_ai": "نصائح بالذكاء الاصطناعي",
+  "onboarding_badge_control": "تحكم بالميزانية",
+  "onboarding_tagline": "رفيق واضح لكل فاتورة وشراء وهدف.",
+  "onboarding_chip_security": "خصوصية وأمان",
+  "onboarding_chip_reminders": "تنبيهات ذكية",
+  "onboarding_chip_insights": "رؤى واضحة"
 }

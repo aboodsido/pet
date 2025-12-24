@@ -71,5 +71,21 @@
   "app_language": "App Language",
   "export_share": "Export & Share CSV",
   "dark_theme_enabled": "Dark Theme Enabled",
-  "light_theme_enabled": "Light Theme Enabled"
+  "light_theme_enabled": "Light Theme Enabled",
+  "skip": "Skip",
+  "next": "Next",
+  "get_started": "Get started",
+  "onboarding_title_1": "Master your money at a glance",
+  "onboarding_description_1": "See spending and income in one calm view, organized by categories that match your life.",
+  "onboarding_title_2": "AI keeps an eye on your habits",
+  "onboarding_description_2": "Get early warnings, monthly trends, and concise tips based on how you actually spend.",
+  "onboarding_title_3": "Stay in control, stay on track",
+  "onboarding_description_3": "Set goals, compare months, and build savings momentum without the guesswork.",
+  "onboarding_badge_finances": "Money overview",
+  "onboarding_badge_ai": "AI-powered tips",
+  "onboarding_badge_control": "Budget control",
+  "onboarding_tagline": "A clear companion for every bill, purchase, and goal.",
+  "onboarding_chip_security": "Private & secure",
+  "onboarding_chip_reminders": "Smart nudges",
+  "onboarding_chip_insights": "Crisp insights"
 }
